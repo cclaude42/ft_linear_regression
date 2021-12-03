@@ -68,49 +68,45 @@ def writeData (theta0, theta1):
 ##################                  MAIN                  ################
 ##########################################################################
 
-# Files
-dataFile = './data.csv'
-thetaFile = './theta.csv'
 
-# Constants
-learningRate = 1
-nIterations = 666
+dataFile = input("Input file to save data to :")
 
-
-# Read CSV data
+# Check if file exists
 if os.path.isfile(dataFile):
-    x, y = readData()
-    print("Training...")
-else:
-    print("Error : no data available")
+    print("Error : file already exists")
     sys.exit()
 
-# Normalize vectors
-normedX = normalize(x)
-normedY = normalize(y)
+# Check if file will be CSV
+if not s.endswith(".csv"):
+    print("Error : file must be a .csv")
+    sys.exit()
 
-# Perform the gradient descent
-theta0, theta1 = gradientDescent(normedX, normedY)
+# # Normalize vectors
+# normedX = normalize(x)
+# normedY = normalize(y)
 
-# Denormalize theta values
-theta0 = theta0 * (max(y) - min(y)) + min(y)
-theta1 = theta1 * (max(y) - min(y)) / (max(x) - min(x))
+# # Perform the gradient descent
+# theta0, theta1 = gradientDescent(normedX, normedY)
 
-# Save theta values
-writeData(theta0, theta1)
-print("Done training !")
-print("Data saved at ", thetaFile)
+# # Denormalize theta values
+# theta0 = theta0 * (max(y) - min(y)) + min(y)
+# theta1 = theta1 * (max(y) - min(y)) / (max(x) - min(x))
 
-# Display results
-plt.title('Relationship between a car mileage and its price', fontdict = {'family':'serif','color':'black','size':16})
-plt.xlabel('Mileage in km', fontdict = {'family':'serif','color':'green','size':13})
-plt.ylabel('Price in $', fontdict = {'family':'serif','color':'green','size':13})
-plt.plot(x, y, 'o')
-plt.plot([min(x), max(x)], [theta0 + theta1 * min(x), theta0 + theta1 * max(x)])
-plt.show()
+# # Save theta values
+# writeData(theta0, theta1)
+# print("Done training !")
+# print("Data saved at ", thetaFile)
 
-for i in range(10):
-    plt.plot(i * 10000, i * 1000, 'x')
-    plt.pause(0.01)
-    s = input()
-    plt.clf()
+# # Display results
+# plt.title('Relationship between a car mileage and its price', fontdict = {'family':'serif','color':'black','size':16})
+# plt.xlabel('Mileage in km', fontdict = {'family':'serif','color':'green','size':13})
+# plt.ylabel('Price in $', fontdict = {'family':'serif','color':'green','size':13})
+# plt.plot(x, y, 'o')
+# plt.plot([min(x), max(x)], [theta0 + theta1 * min(x), theta0 + theta1 * max(x)])
+# plt.show()
+
+# for i in range(10):
+#     plt.plot(i * 10000, i * 1000, 'x')
+#     plt.pause(0.01)
+#     s = input()
+#     plt.clf()
