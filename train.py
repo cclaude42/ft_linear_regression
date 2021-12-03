@@ -4,6 +4,7 @@ import csv
 import sys
 import matplotlib.pyplot as plt
 
+
 # Goal function
 def estimatePrice (theta0, theta1, mileage):
     return theta0 + (theta1 * mileage)
@@ -24,7 +25,7 @@ def meanError1 (x, y, theta0, theta1):
         adjustedSum += (estimatePrice(theta0, theta1, x[i]) - y[i]) * x[i]
     return adjustedSum / m
 
-# Iterating towards local minimum
+# The algorithm : iterating towards local minimum
 def gradientDescent (x, y):
     theta0 = 0
     theta1 = 0
@@ -43,7 +44,7 @@ def normalize (lst):
     return normalized
 
 # Reading data CSV for x and y values
-def readData ():
+def readData (dataFile):
     x = []
     y = []
     with open(dataFile, newline='') as csvfile:
@@ -57,11 +58,22 @@ def readData ():
     return x, y
 
 # Saving theta values for estimate.py to use
-def writeData (theta0, theta1):
+def writeTheta (theta0, theta1, dataFile):
     with open(thetaFile, 'w', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',')
+        spamwriter.writerow(['dataFile', dataFile])
         spamwriter.writerow(['theta0', theta0])
         spamwriter.writerow(['theta1', theta1])
+
+# Display results
+def displayResults (x, y, theta0, theta1):
+    plt.title('Relationship between a car mileage and its price', fontdict = {'family':'serif','color':'black','size':16})
+    plt.xlabel('Mileage in km', fontdict = {'family':'serif','color':'green','size':13})
+    plt.ylabel('Price in $', fontdict = {'family':'serif','color':'green','size':13})
+    plt.plot([min(x), max(x)], [theta0 + theta1 * min(x), theta0 + theta1 * max(x)], color='C1', label="f(x) = {0}*x + {1}".format(round(theta1, 2), round(theta0, 2)))
+    plt.plot(x, y, 'o', color='C0')
+    plt.legend()
+    plt.show()
 
 
 ##########################################################################
@@ -76,13 +88,19 @@ thetaFile = './theta.csv'
 learningRate = 1
 nIterations = 666
 
+# Get optional dataFile from args
+if len(sys.argv) >= 2:
+    dataFile = sys.argv[1]
 
 # Read CSV data
-if os.path.isfile(dataFile):
-    x, y = readData()
+if os.path.isfile(dataFile) and dataFile.endswith(".csv"):
+    x, y = readData(dataFile)
     print("Training...")
+elif os.path.isfile(dataFile):
+    print("Error : data file must be a .csv")
+    sys.exit()
 else:
-    print("Error : no data available")
+    print("Error : no data available at", dataFile)
     sys.exit()
 
 # Normalize vectors
@@ -97,20 +115,9 @@ theta0 = theta0 * (max(y) - min(y)) + min(y)
 theta1 = theta1 * (max(y) - min(y)) / (max(x) - min(x))
 
 # Save theta values
-writeData(theta0, theta1)
+writeTheta(theta0, theta1, dataFile)
 print("Done training !")
-print("Data saved at ", thetaFile)
+print("Data saved at", thetaFile)
 
 # Display results
-plt.title('Relationship between a car mileage and its price', fontdict = {'family':'serif','color':'black','size':16})
-plt.xlabel('Mileage in km', fontdict = {'family':'serif','color':'green','size':13})
-plt.ylabel('Price in $', fontdict = {'family':'serif','color':'green','size':13})
-plt.plot(x, y, 'o')
-plt.plot([min(x), max(x)], [theta0 + theta1 * min(x), theta0 + theta1 * max(x)])
-plt.show()
-
-for i in range(10):
-    plt.plot(i * 10000, i * 1000, 'x')
-    plt.pause(0.01)
-    s = input()
-    plt.clf()
+displayResults(x, y, theta0, theta1)
